@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Embed Generator</title>
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    <style>
+        /* Global Styles */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #6a0dad, #8b008b);
+            color: white;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100vh;
+        }
+
+        header, footer {
+            background-color: #4b0082;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        header h1, footer p {
+            margin: 0;
+            color: #fff;
+        }
+
+        .container {
+            text-align: center;
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            max-width: 1200px;
+            margin: 20px auto;
+            color: #333;
+            overflow-y: auto;
+            height: 75vh;
+        }
+
+        h2 {
+            font-size: 2rem;
+            color: #6a0dad;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #6a0dad;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            outline: none;
+            resize: none;
+        }
+
+        textarea:focus {
+            border-color: #a94fd3;
+            box-shadow: 0 0 10px rgba(106, 13, 173, 0.3);
+        }
+
+        button {
+            padding: 10px 25px;
+            background-color: #6a0dad;
+            color: white;
+            border: none;
+            font-size: 1.1rem;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #a94fd3;
+            box-shadow: 0 8px 16px rgba(106, 13, 173, 0.3);
+        }
+
+        #embed-links-container {
+            margin-top: 20px;
+            text-align: left;
+            max-height: 400px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .video-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .copy-container {
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .copy-btn {
+            background-color: #4b0082;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            transition: 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            background-color: #a94fd3;
+        }
+
+        footer {
+            background-color: #6a0dad;
+            padding: 20px;
+            text-align: center;
+            color: white;
+        }
+
+        .footer-content .social-links a {
+            color: #fff;
+            margin: 0 10px;
+            font-size: 1.5rem;
+            transition: color 0.3s;
+        }
+
+        .social-links a:hover {
+            color: #ddd;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1>🎥 YouTube Video Embed Generator</h1>
+        </div>
+    </header>
+
+    <div class="container">
+        <h2>Generate Embedded Links for Multiple YouTube Videos (Up to 500)</h2>
+        <textarea id="video-names" placeholder="Enter video names (one per line, max 500)" rows="6"></textarea>
+        <button id="search-btn">🔍 Search & Generate Embed Links</button>
+        <div id="embed-links-container"></div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="social-links">
+                <a href="https://www.facebook.com/profile.php?id=61565331820402" target="_blank" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                <a href="https://www.instagram.com/nepfolk/" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                <a href="https://arjanchaudharyy.github.io/arjanchaudharyy/" target="_blank" aria-label="Personal Website"><i class="fas fa-globe"></i></a>
+            </div>
+            <p class="copyright">© 2024 Arjan Chaudhary. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById('search-btn').addEventListener('click', function() {
+            const videoNames = document.getElementById('video-names').value.split('\n').filter(name => name.trim() !== '');
+
+            if (videoNames.length === 0) {
+                alert('Please enter at least one video name.');
+                return;
+            } else if (videoNames.length > 500) {
+                alert('Please limit to a maximum of 500 video names.');
+                return;
+            }
+
+            const apiKey = 'AIzaSyCRve8bZf1qC62xiB9eWUBlW29KxBYnCzI'; // Your provided API key
+            const embedLinksContainer = document.getElementById('embed-links-container');
+            embedLinksContainer.innerHTML = ''; // Clear previous results
+
+            // Process each video name in order
+            videoNames.forEach((videoName, index) => {
+                const searchUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(videoName)}&type=video&key=${apiKey}&maxResults=1`;
+
+                fetch(searchUrl)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.items.length > 0) {
+                            const videoId = data.items[0].id.videoId;
+                            const embedLink = `https://www.youtube.com/embed/${videoId}`;
+                            const iframe = `<iframe width="420" height="315" src="${embedLink}" frameborder="0" allowfullscreen></iframe>`;
+                            
+                            const videoWrapper = document.createElement('div');
+                            videoWrapper.classList.add('video-wrapper');
+                            videoWrapper.innerHTML = `<h3>${index + 1}. ${videoName}</h3>${iframe}
+                            <div class="copy-container">
+                                <input type="text" value="${embedLink}" readonly style="width: 250px; padding: 5px; border: 1px solid #ccc; border-radius: 5px;">
+                                <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                            </div>`;
+                            
+                            embedLinksContainer.appendChild(videoWrapper);
+                        } else {
+                            const errorMsg = document.createElement('p');
+                            errorMsg.textContent = `No video found for "${videoName}".`;
+                            embedLinksContainer.appendChild(errorMsg);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        const errorMsg = document.createElement('p');
+                        errorMsg.textContent = `Failed to fetch video for "${videoName}".`;
+                        embedLinksContainer.appendChild(errorMsg);
+                    });
+            });
+        });
+
+        function copyToClipboard(button) {
+            const input = button.previousElementSibling;
+            input.select();
+            document.execCommand("copy");
+            button.textContent = "Copied!";
+            setTimeout(() => button.textContent = "Copy", 2000);
+        }
+    </script>
+</body>
+</html>
