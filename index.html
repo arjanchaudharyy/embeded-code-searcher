@@ -6,7 +6,7 @@
     <title>YouTube Embed Generator</title>
     <script src="https://kit.fontawesome.com/a076d05399.js"></script>
     <style>
-        /* Global Styles */
+       
         body {
             font-family: 'Poppins', sans-serif;
             background: linear-gradient(135deg, #6a0dad, #8b008b);
@@ -172,11 +172,11 @@
                 return;
             }
 
-            const apiKey = 'AIzaSyCRve8bZf1qC62xiB9eWUBlW29KxBYnCzI'; // Your provided API key
+            const apiKey = 'AFNO API KEY USE GARA DOST'; 
             const embedLinksContainer = document.getElementById('embed-links-container');
-            embedLinksContainer.innerHTML = ''; // Clear previous results
+            embedLinksContainer.innerHTML = ''; 
 
-            // Process each video name in order
+          
             videoNames.forEach((videoName, index) => {
                 const searchUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(videoName)}&type=video&key=${apiKey}&maxResults=1`;
 
